@@ -1,66 +1,96 @@
-var zelda = 25;
-var width = 500;    // Default
-var height = 500;   // Default
+var zelda = 50;
+
+var gridSize = new BlockPoint(500, 500);
+
+var max_x = gridSize.x/zelda;
+var max_y = gridSize.y/zelda;
 
 var canvas = document.getElementById("mainCan");
 var finder = canvas.getContext('2d');
 
-function drawGrid(width, height){
-    var ctx = canvas.getContext('2d');
-    ctx.canvas.width = width;
-    ctx.canvas.height = height;
-    for (x = 0; x <= width; x += zelda) {
+function BlockPoint(x, y){
+    this.x = x;
+    this.y = y;
+    function randomPoint() {
+        this.x = Math.floor(Math.random() * max_x);
+        this.y = Math.floor(Math.random() * max_y);
+    }
+};
+
+function generatePath(){
+    for (path_y = currentPos.y-1; path_y >= 0; path_y--){
+        let random_direction = Math.ceil(Math.random() * 2) * (Math.round(Math.random()) ? 1 : -1);
+        let drawCount = 0;
+        for (path_x = currentPos.x; path_x >= 0 && path_x < max_x && drawCount <= 4; path_x+=random_direction){
+            placeRect(path_x, path_y, "yellow");
+            ++drawCount;
+        }
+    }
+    
+}
+
+function drawGrid(BlockPoint){
+    let ctx = canvas.getContext('2d');
+    ctx.canvas.width = BlockPoint.x;
+    ctx.canvas.height = BlockPoint.y;
+    for (x = 0; x <= BlockPoint.x; x += zelda) {
         ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        for (y = 0; y <= height; y += zelda) {
+        ctx.lineTo(x, BlockPoint.y);
+        for (y = 0; y <= BlockPoint.y; y += zelda) {
             ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
+            ctx.lineTo(BlockPoint.x, y);
         }
     }
     ctx.stroke();
     drawInitialFinder();
-    drawEndBlock();
+    //drawEndBlock();
 }
+
 function placeRect(x, y, color){
-    var cvs = canvas.getContext('2d');
+    let cvs = canvas.getContext('2d');
     cvs.beginPath();
-    cvs.rect((x)*zelda, (y-1)*zelda, zelda, zelda);
+    cvs.rect((x)*zelda, (y)*zelda, zelda, zelda);
     cvs.fillStyle = color;
     cvs.fill();
     cvs.stroke();
 }
-var current_x, current_y;
-function placeFinder(x, y){
-    console.log("(" + x + ", "+y+")");
+
+var currentPos = new BlockPoint();
+function placeFinder(point){
+    console.log("(" + point.x + ", "+point.y+")");
     // Paint white over previous box
     finder.beginPath();
-    finder.rect((current_x)*zelda, (current_y-1)*zelda, zelda, zelda);
+    finder.rect((currentPos.x)*zelda, (currentPos.y)*zelda, zelda, zelda);
     finder.fillStyle = "white";
     finder.fill();
     finder.stroke();
 
     // Draw on x, y
     finder.beginPath();
-    finder.rect((x)*zelda, (y-1)*zelda, zelda, zelda);
+    finder.rect((point.x)*zelda, (point.y)*zelda, zelda, zelda);
     finder.fillStyle = "red";
     finder.fill();
     finder.stroke();
     
-    current_x = x;
-    current_y = y;
+    currentPos.x = point.x;
+    currentPos.y = point.y;
 }
+
 function drawInitialFinder(){
-    var y = height / zelda;
-    var random_x = Math.floor(Math.random() * y);
+    let y = max_y - 1;
+    let random_x = Math.floor(Math.random() * y+1);
+    let initialPos = new BlockPoint(random_x, y);
     console.log("Starting at: X: " + random_x + ", Y: " + y);
-    placeFinder(random_x, y);
+    placeFinder(initialPos);
 }
+
 function drawEndBlock(){
-    var y = 1;
-    var random_x = Math.floor(Math.random() * height/zelda);
+    let y = 1;
+    let random_x = Math.floor(Math.random() * max_y);
     console.log("Drawing End at: X: " + random_x + ", Y: " + y);
     placeRect(random_x, y, "green");
 }
+
 function getCustomSize(){
     let newHeight = document.getElementById("custom_x").value;
     let newWidth = document.getElementById("custom_y").value;
@@ -70,15 +100,16 @@ function getCustomSize(){
         console.log("Invalid values!");
         return;
     }
-    width = newWidth;
-    height = newHeight;
+    gridSize.x = newWidth;
+    gridSize.y = newHeight;
+    
     console.log("New width: " + width + "\nNew height: " + height);
-    drawGrid(width, height);
+    let point = new BlockPoint(newWidth, newHeight);
+    drawGrid(point);
 }
-function collisionDetection(desired_x, desired_y){
-    let heightInBlock = height / zelda;
-    let widthInBlock = width / zelda;
-    if (desired_x > heightInBlock-1 | desired_y > widthInBlock | desired_x < 0 | desired_y <= 0){
+
+function collisionDetection(point){
+    if (point.x >= max_x | point.y >= max_y | point.x < 0 | point.y < 0){
         console.log("Collision!")
         return false;
     }
@@ -86,32 +117,40 @@ function collisionDetection(desired_x, desired_y){
         return true;
     }
 }
+
 function move(direction){
+    let desiredPoint = new BlockPoint(currentPos.x, currentPos.y)
     switch (direction){
         case "ArrowUp":
-            if (collisionDetection(current_x, current_y-1)){
-                placeFinder(current_x, current_y-1);
-            }
+                desiredPoint.y--;
+                if (collisionDetection(desiredPoint)){
+                placeFinder(desiredPoint);
+                }
             break;
         case "ArrowDown":
-            if (collisionDetection(current_x, current_y+1)){
-                placeFinder(current_x, current_y+1);
+            desiredPoint.y++;
+            if (collisionDetection(desiredPoint)){
+                placeFinder(desiredPoint);
             }
             break;
         case "ArrowLeft":
-            if (collisionDetection(current_x-1, current_y)){
-                placeFinder(current_x-1, current_y);
+            desiredPoint.x--;
+            if (collisionDetection(desiredPoint)){
+                placeFinder(desiredPoint);
             }
             break;
         case "ArrowRight":
-            if (collisionDetection(current_x+1, current_y)){
-                placeFinder(current_x+1, current_y);
+            desiredPoint.x++;
+            if (collisionDetection(desiredPoint)){
+                placeFinder(desiredPoint);
             }
             break;
     }
 }
+
 document.addEventListener('keyup', (event) =>{
     move(event.key);
 });
 
-drawGrid(width, height);
+drawGrid(gridSize);
+generatePath();
