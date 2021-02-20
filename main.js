@@ -24,6 +24,7 @@ function drawGrid(width, height){
     }
     ctx.stroke();
     drawInitialFinder();
+    drawEndBlock();
 }
 function placeRect(x, y, color){
     var cvs = canvas.getContext('2d');
@@ -56,7 +57,14 @@ function placeFinder(x, y){
 function drawInitialFinder(){
     var y = height / zelda;
     var random_x = Math.floor(Math.random() * y);
+    console.log("Starting at: X: " + random_x + ", Y: " + y);
     placeFinder(random_x, y);
+}
+function drawEndBlock(){
+    var y = 1;
+    var random_x = Math.floor(Math.random() * height/zelda);
+    console.log("Drawing End at: X: " + random_x + ", Y: " + y);
+    placeRect(random_x, y, "green");
 }
 function getCustomSize(){
     let newHeight = document.getElementById("custom_x").value;
