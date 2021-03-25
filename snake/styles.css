@@ -1,0 +1,9 @@
+#mainDiv{
+    width:100vw;
+    height:60vh;
+    display:block;
+}
+
+#mainCan{
+    border:1px solid #c3c3c3;
+}

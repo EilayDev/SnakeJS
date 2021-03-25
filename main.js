@@ -111,45 +111,51 @@ function getCustomSize(){
 function collisionDetection(point){
     if (point.x >= max_x | point.y >= max_y | point.x < 0 | point.y < 0){
         console.log("Collision!")
-        return false;
+        return true;
     }
     else{
-        return true;
+        return false;
     }
 }
 
 function move(direction){
     let desiredPoint = new BlockPoint(currentPos.x, currentPos.y)
     switch (direction){
-        case "ArrowUp":
+        case "up":
                 desiredPoint.y--;
-                if (collisionDetection(desiredPoint)){
-                placeFinder(desiredPoint);
-                }
             break;
-        case "ArrowDown":
+        case "down":
             desiredPoint.y++;
-            if (collisionDetection(desiredPoint)){
-                placeFinder(desiredPoint);
-            }
             break;
-        case "ArrowLeft":
+        case "left":
             desiredPoint.x--;
-            if (collisionDetection(desiredPoint)){
-                placeFinder(desiredPoint);
-            }
             break;
-        case "ArrowRight":
+        case "right":
             desiredPoint.x++;
-            if (collisionDetection(desiredPoint)){
-                placeFinder(desiredPoint);
-            }
             break;
+    }
+    if (!collisionDetection(desiredPoint)){
+        placeFinder(desiredPoint);
     }
 }
 
 document.addEventListener('keyup', (event) =>{
-    move(event.key);
+    let direction;
+    switch (event.key){
+        case "ArrowUp":
+            direction = "up";
+            break;
+        case "ArrowDown":
+            direction = "down";
+            break;
+        case "ArrowLeft":
+            direction = "left";
+            break;
+        case "ArrowRight":
+            direction = "right";
+            break;
+    }
+    move(direction);
 });
 
 drawGrid(gridSize);
