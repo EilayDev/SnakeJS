@@ -1,3 +1,13 @@
+class BlockPoint{
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+    }
+    randomPoint() {
+        this.x = Math.floor(Math.random() * max_x);
+        this.y = Math.floor(Math.random() * max_y);
+    }
+};
 
 function tick(){
     console.log(directionInput)
@@ -11,7 +21,13 @@ function tick(){
     }
     else {
         console.log("illegal snake move");
+        move(currentDirection)
     }
+    // Detect if on apple
+    if (currentPos.x == applePosition.x && currentPos.y == applePosition.y){
+        ++numberOfHeads;
+        generateApple();
+    } 
 }
 
 function generatePath(){
@@ -19,28 +35,18 @@ function generatePath(){
         let random_direction = Math.ceil(Math.random() * 2) * (Math.round(Math.random()) ? 1 : -1);
         let drawCount = 0;
         for (path_x = currentPos.x; path_x >= 0 && path_x < max_x && drawCount <= 4; path_x+=random_direction){
-            placeRect(path_x, path_y, "yellow");
+            drawRect(path_x, path_y, "yellow");
             ++drawCount;
         }
     }
 }
 
-function getCustomSize(){
-    let newHeight = document.getElementById("custom_x").value;
-    let newWidth = document.getElementById("custom_y").value;
-    let reminder = (newHeight + newWidth) % zelda;
-    console.log("Reminder: " + reminder);
-    if (reminder != 0){
-        console.log("Invalid values!");
-        return;
-    }
-    gridSize.x = newWidth;
-    gridSize.y = newHeight;
-    
-    console.log("New width: " + width + "\nNew height: " + height);
-    let point = new BlockPoint(newWidth, newHeight);
-    drawGrid(point);
+function generateApple(){
+    applePosition.randomPoint();
+    drawRect(applePosition, "yellow");
 }
+
+
 
 function collisionDetection(point){
     if (point.x >= max_x | point.y >= max_y | point.x < 0 | point.y < 0){
@@ -73,12 +79,12 @@ function move(direction){
             break;
     }
     if (!collisionDetection(nextPosition)){
-        placeFinder(nextPosition);
+        drawHead(nextPosition);
     }
 }
 
 document.addEventListener('keyup', (event) =>{
-    let direction;
+    let direction = 0;
     switch (event.key){
         case "ArrowUp":
             direction = "up";
@@ -93,5 +99,7 @@ document.addEventListener('keyup', (event) =>{
             direction = "right";
             break;
     }
-    directionInput = direction;
+    if (direction != 0){
+        directionInput = direction;
+    }
 });

@@ -2,7 +2,7 @@ function drawEndBlock(){
     let y = 1;
     let random_x = Math.floor(Math.random() * max_y);
     console.log("Drawing End at: X: " + random_x + ", Y: " + y);
-    placeRect(random_x, y, "green");
+    drawRect(random_x, y, "green");
 }
 
 function drawInitialFinder(){
@@ -10,10 +10,13 @@ function drawInitialFinder(){
     let random_x = Math.floor(Math.random() * y+1);
     let initialPos = new BlockPoint(random_x, y);
     console.log("Starting at: X: " + random_x + ", Y: " + y);
-    placeFinder(initialPos);
+    drawHead(initialPos);
 }
 
 function drawGrid(BlockPoint){
+    BlockPoint.x*=zelda;
+    BlockPoint.y*=zelda;
+
     let ctx = canvas.getContext('2d');
     ctx.canvas.width = BlockPoint.x;
     ctx.canvas.height = BlockPoint.y;
@@ -30,7 +33,7 @@ function drawGrid(BlockPoint){
     //drawEndBlock();
 }
 
-function placeFinder(point){
+function drawHead(point){
     console.log("(" + point.x + ", "+point.y+")");
     // Paint white over previous box
     finder.beginPath();
@@ -50,11 +53,32 @@ function placeFinder(point){
     currentPos.y = point.y;
 }
 
-function placeRect(x, y, color){
+function drawRect(x, y, color){
     let cvs = canvas.getContext('2d');
     cvs.beginPath();
     cvs.rect((x)*zelda, (y)*zelda, zelda, zelda);
     cvs.fillStyle = color;
     cvs.fill();
     cvs.stroke();
+}
+
+function drawRect(point, color){
+    let cvs = canvas.getContext('2d');
+    cvs.beginPath();
+    cvs.rect((point.x)*zelda, (point.y)*zelda, zelda, zelda);
+    cvs.fillStyle = color;
+    cvs.fill();
+    cvs.stroke();
+}
+
+function getCustomSize(){
+    // TODO: fix this function
+    let newHeight = document.getElementById("custom_x").value;
+    let newWidth = document.getElementById("custom_y").value;
+    
+    gridSize.x = newWidth;
+    gridSize.y = newHeight;
+    
+    let point = new BlockPoint(newWidth, newHeight);
+    drawGrid(point);
 }
