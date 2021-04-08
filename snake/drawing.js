@@ -70,15 +70,3 @@ function drawRect(point, color){
     cvs.fill();
     cvs.stroke();
 }
-
-function getCustomSize(){
-    // TODO: fix this function
-    let newHeight = document.getElementById("custom_x").value;
-    let newWidth = document.getElementById("custom_y").value;
-    
-    gridSize.x = newWidth;
-    gridSize.y = newHeight;
-    
-    let point = new BlockPoint(newWidth, newHeight);
-    drawGrid(point);
-}
