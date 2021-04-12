@@ -29,12 +29,15 @@ function drawGrid(BlockPoint){
         }
     }
     ctx.stroke();
-    drawInitialFinder();
+    //drawInitialFinder();
     //drawEndBlock();
+    snake[0].draw();
 }
 
 function drawHead(point){
-    console.log("(" + point.x + ", "+point.y+")");
+    //console.log("(" + point.x + ", "+point.y+")");
+    /*
+
     // Paint white over previous box
     finder.beginPath();
     finder.rect((currentPos.x)*zelda, (currentPos.y)*zelda, zelda, zelda);
@@ -42,6 +45,7 @@ function drawHead(point){
     finder.fill();
     finder.stroke();
 
+    */
     // Draw on x, y
     finder.beginPath();
     finder.rect((point.x)*zelda, (point.y)*zelda, zelda, zelda);
@@ -49,8 +53,20 @@ function drawHead(point){
     finder.fill();
     finder.stroke();
     
-    currentPos.x = point.x;
-    currentPos.y = point.y;
+    //currentPos.x = point.x;
+    //currentPos.y = point.y;
+}
+
+function clear(){ // this function clears the board
+    for (let x = 0; x < max_x; x++){
+        for (let y = 0; y < max_y; y++){
+            finder.beginPath();
+            finder.rect((x)*zelda, (y)*zelda, zelda, zelda);
+            finder.fillStyle = "white";
+            finder.fill();
+            finder.stroke();
+        }
+    }
 }
 
 function drawRect(x, y, color){

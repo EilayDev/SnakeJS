@@ -1,105 +1,77 @@
-class BlockPoint{
-    constructor(x, y){
-        this.x = x;
-        this.y = y;
+// TODO: detect head to snake collision
+
+function moveSnake(direction){
+    if (!mainHead.isCollided()){
+        mainHead.move(direction);
     }
-    randomPoint() {
-        this.x = Math.floor(Math.random() * max_x);
-        this.y = Math.floor(Math.random() * max_y);
+    else{
+        console.log("GAME FAILED!")
     }
-};
+}
+
+function drawSnake(){
+    mainHead.draw();
+    for (let i = 1; i < posHistory.length; i++){
+        drawHead(posHistory[i]);
+    }
+}
 
 function tick(){
-    console.log(directionInput)
-    if (!(currentDirection == "up" && directionInput == "down" ||
-        currentDirection == "down" && directionInput == "up" ||
-        currentDirection == "left" && directionInput == "right" ||
-        currentDirection == "right" && directionInput == "left"))
+    clear();
+    if (!(currentDirection == UP && directionInput == DOWN ||
+        currentDirection == DOWN && directionInput == UP ||
+        currentDirection == LEFT && directionInput == RIGHT ||
+        currentDirection == RIGHT && directionInput == LEFT))
         {
 
-        move(directionInput);
+        currentDirection = directionInput;
+        moveSnake(directionInput);
+
     }
     else {
         console.log("illegal snake move");
-        move(currentDirection)
-    }
+        moveSnake(currentDirection);
+    }    
+    drawSnake();
+
     // Detect if on apple
-    if (currentPos.x == applePosition.x && currentPos.y == applePosition.y){
-        ++numberOfHeads;
+    if (mainHead.currentPosition.x == applePosition.x && mainHead.currentPosition.y == applePosition.y){
+        // add another head to snake
+        let newTail = new tail(new BlockPoint(posHistory[snake.length+1]));
+        snake.push(newTail);
         generateApple();
-    } 
+    }
+    drawApple();
+
+    // For debug
+    console.log("(" + mainHead.currentPosition.x + ", "+mainHead.currentPosition.y+")");
 }
 
-function generatePath(){
-    for (path_y = currentPos.y-1; path_y >= 0; path_y--){
-        let random_direction = Math.ceil(Math.random() * 2) * (Math.round(Math.random()) ? 1 : -1);
-        let drawCount = 0;
-        for (path_x = currentPos.x; path_x >= 0 && path_x < max_x && drawCount <= 4; path_x+=random_direction){
-            drawRect(path_x, path_y, "yellow");
-            ++drawCount;
-        }
-    }
+
+function drawApple(){
+    drawRect(applePosition, "yellow");
 }
 
 function generateApple(){
     applePosition.randomPoint();
-    drawRect(applePosition, "yellow");
-}
-
-
-
-function collisionDetection(point){
-    if (point.x >= max_x | point.y >= max_y | point.x < 0 | point.y < 0){
-        console.log("Collision!")
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-function move(direction){
-    let nextPosition = new BlockPoint(currentPos.x, currentPos.y)
-    switch (direction){
-        case "up":
-            currentDirection = "up";
-            nextPosition.y--;
-            break;
-        case "down":
-            currentDirection = "down";
-            nextPosition.y++;
-            break;
-        case "left":
-            currentDirection = "left";
-            nextPosition.x--;
-            break;
-        case "right":
-            currentDirection = "right";
-            nextPosition.x++;
-            break;
-    }
-    if (!collisionDetection(nextPosition)){
-        drawHead(nextPosition);
-    }
 }
 
 document.addEventListener('keyup', (event) =>{
     let direction = 0;
     switch (event.key){
         case "ArrowUp":
-            direction = "up";
+            direction = UP;
             break;
         case "ArrowDown":
-            direction = "down";
+            direction = DOWN;
             break;
         case "ArrowLeft":
-            direction = "left";
+            direction = LEFT;
             break;
         case "ArrowRight":
-            direction = "right";
+            direction = RIGHT;
             break;
     }
-    if (direction != 0){
-        directionInput = direction;
-    }
+    directionInput = direction;
+    
 });
