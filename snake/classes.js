@@ -7,6 +7,9 @@ class BlockPoint{
         this.x = Math.floor(Math.random() * max_x);
         this.y = Math.floor(Math.random() * max_y);
     }
+    static isEqual(blockpoint1, blockpoint2){
+        return blockpoint1.x == blockpoint2.x && blockpoint1.y == blockpoint2.y
+    }
 };
 class part {
     constructor(BlockPoint){
@@ -29,7 +32,7 @@ class part {
         }
     }
     draw(){
-        drawHead(this.currentPosition)
+        drawHead(this.currentPosition, "black")
     }
 }
 
@@ -67,6 +70,4 @@ class head extends part{
     }
 }
 
-class tail extends part{
-    
-}
+class tail extends part{}

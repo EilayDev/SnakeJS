@@ -43,4 +43,7 @@ const movementSpeed = 500;
 
 drawGrid(gridSize);
 generateApple();
-setInterval(tick, movementSpeed);
+var tickInterval = setInterval(tick, movementSpeed);
+
+// for debug
+cheat_setSnakeSize(5);

@@ -34,22 +34,11 @@ function drawGrid(BlockPoint){
     snake[0].draw();
 }
 
-function drawHead(point){
-    //console.log("(" + point.x + ", "+point.y+")");
-    /*
-
-    // Paint white over previous box
-    finder.beginPath();
-    finder.rect((currentPos.x)*zelda, (currentPos.y)*zelda, zelda, zelda);
-    finder.fillStyle = "white";
-    finder.fill();
-    finder.stroke();
-
-    */
+function drawHead(point, color="yellow"){
     // Draw on x, y
     finder.beginPath();
     finder.rect((point.x)*zelda, (point.y)*zelda, zelda, zelda);
-    finder.fillStyle = "red";
+    finder.fillStyle = color;
     finder.fill();
     finder.stroke();
     
@@ -85,4 +74,15 @@ function drawRect(point, color){
     cvs.fillStyle = color;
     cvs.fill();
     cvs.stroke();
+}
+
+function drawApple(){
+    drawRect(applePosition, "red");
+}
+
+function drawSnake(){
+    mainHead.draw();
+    for (let i = 1; i < posHistory.length; i++){
+        drawHead(posHistory[i]);
+    }
 }
