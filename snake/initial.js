@@ -39,7 +39,7 @@ snake.push(mainHead);
 
 var applePosition = new BlockPoint();
 
-const movementSpeed = 500;
+const movementSpeed = 200;
 
 drawGrid(gridSize);
 generateApple();
